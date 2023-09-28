@@ -1,44 +1,74 @@
 #include<iostream>
 
 //convertir les caractere
-int charToInt(char c){
-    if(c>=0 && c<=9)
-        return c;
-    else
-        return c - 'A' + 10;    
+int charToDecimal(char c){
+    if (c >= '0' && c <= '9') {
+        return c - '0';
+    } else if (c >= 'A' && c <= 'Z') {
+        return 10 + c - 'A';
+    } else if (c >= 'a' && c <= 'z') {
+        return 10 + c - 'a';
+    } else {
+        // Gérer les caractères non valides
+        return -1;
+    }
+}
+
+char DecimalToChar(int c){
+     if (c < 10) {
+            return '0' + c;
+        } else if(c<=36){
+            return 'A' + (c - 10);
+        }else{
+            return -1;
+        }       
 }
 
 //convertire la chaine vers sa valeur en decimal
-void  convertTo_Base10(std::string chaine, int base_depart){
+int  convertTo_Base10(std::string chaine, int base_depart){
     //utiliser Horner
+    int result = 0;
+    for (int i = 0; i < chaine.length(); i++) {
+        result = result * base_depart + charToDecimal(chaine[i]);
+    }
+    return result;
 }
 
 
 //convertir de la valeur en décimal vers la base demander
-std::string convertFrom_Base10(std::string chaine, int base_arrive){
+std::string convertFrom_Base10(int chaine, int base_arrive){
     std::string result = "";
     //diviser par la base_arrivee et stocker le reste dans une chaine
-
+    while(chaine >= base_arrive){
+        int reste = chaine % base_arrive;
+        chaine = chaine / base_arrive;
+        result = DecimalToChar(reste) + result; //erreur dans la fonction DecimalToChar
+    }
+    if(chaine != 0){
+        result = DecimalToChar(chaine) + result;
+    }
     return result;
 }
 
 
 std::string base_converter(std::string chaine, int base_depart, int base_arrive){
-    if(base_depart != 10){ //la base de départ différente de la base 10
-        convertTo_Base10(chaine, base_depart);
-    }
-    if(base_arrive == 10)
+    if(base_depart<2 || base_depart >36 || base_arrive <2 || base_arrive>36)
+        return "Erreur ! numéro de base incorrect";
+    else if(base_arrive == base_depart)
         return chaine;
-    else 
-        return convertFrom_Base10(chaine, base_arrive);
+        else if(base_depart == 10)
+            return convertFrom_Base10(std::stoi(chaine),base_arrive);
+            else {
+                int result = convertTo_Base10(chaine, base_depart);
+                return convertFrom_Base10(result, base_arrive);
+            }
 }
 
 int main(){
-    std::string chaine = "A1";
-    int base_depart = 16;
-    int base_arrive = 10;
+    std::string chaine = "3eh12";
+    int base_depart = 18;
+    int base_arrive = 30;
 
-    std::cout << "debut " << std::endl;
     std::string converted = base_converter(chaine, base_depart, base_arrive);
-    std::cout << "Fin" << std::endl;
+    std::cout << " "<< chaine<< " en base "<< base_depart<< " égale à " << converted << " en base "<< base_arrive << "." << std::endl;
 }
