@@ -8,6 +8,9 @@
 #include<iostream>
 #include<algorithm> //pour std::sort
 
+/* Workaround pour définir une *constante* autrement que par un #define */
+enum szT { szT = 31 };
+
 /*  La somme récursive  */
 //on ajoute chacun des Ti dans un accu- mulateur dans l’ordre où ils apparaissent dans le tableau. 
 int somme_recursive(int T[]){
@@ -69,4 +72,17 @@ int absolutCamparDecroissant(const void* a, const void* b){
 int somme_abs_decroisante(int T[]){
     qsort(T, sizeof(T)/sizeof(T[0]), sizeof(int), absolutCamparDecroissant);
     somme_recursive(T);
+}
+
+int main(){
+
+const double T[szT] = 
+  { 9007199254740992.0, 999999999999.9, -999999999998.9, 3.56, 12.8766, 
+    0.0123, 999394.4453, 1265356.434536, 23.53, 7889.123, 0.00002145, 0.5, 
+    0.06456, 1254534536.4574, -1254534536.4575, -9007199254740992.0, 
+    -999999999999.9, 999999999998.9, -3.56, -12.8766, -0.0123, 
+    -999394.4453, -1265356.434536, -23.53, -7889.123, -0.00002145, 
+    -0.5, -0.06456, -1254534536.4574, 1254534536.4575, 2.6 };
+
+    return 0;
 }
