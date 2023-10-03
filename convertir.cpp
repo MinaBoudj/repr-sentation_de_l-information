@@ -1,6 +1,6 @@
 #include<iostream>
 
-//convertir les caractere
+//convertir les caractere en entier
 int charToDecimal(char c){
     if (c >= '0' && c <= '9') {
         return c - '0';
@@ -14,6 +14,7 @@ int charToDecimal(char c){
     }
 }
 
+//convertir un entier en sa valeur en décimal
 char DecimalToChar(int c){
      if (c < 10) {
             return '0' + c;
@@ -31,6 +32,7 @@ int  convertTo_Base10(std::string chaine, int base_depart){
     for (int i = 0; i < chaine.length(); i++) {
         result = result * base_depart + charToDecimal(chaine[i]);
     }
+    std::cout<< "la valeur en base 10 est : " <<result << std::endl;
     return result;
 }
 
