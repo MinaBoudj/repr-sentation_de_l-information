@@ -6,83 +6,125 @@
  * On va comparer la qualité de differents algorithles de sommation.
 */
 #include<iostream>
+#include<math.h>
 #include<algorithm> //pour std::sort
+
 
 /* Workaround pour définir une *constante* autrement que par un #define */
 enum szT { szT = 31 };
 
+/* Affichage d'un tableau de 'double's de taille sz � l'�cran */
+void affiche_tableau(double T[]) 
+{
+  for (int i = 0; i < szT; ++i) {
+    printf("%g ", T[i]);
+  }
+  printf("\n");
+}
+
 /*  La somme récursive  */
 //on ajoute chacun des Ti dans un accu- mulateur dans l’ordre où ils apparaissent dans le tableau. 
-int somme_recursive(int T[]){
-    int accum = 0;
-    for(auto each  : T)
-        accum += each;
+double somme_recursive(double T[]){
+    double accum = 0;
+    for(int i=0; i<szT; i++){
+        accum += T[i];     
+    }
     return accum;
 }
 
 /* La somme récursive inverse */
 //On inverse le tableau T et l’on applique une somme récursive sur le nouveau tableau.
-int somme_recursive_inverse(int t[]){
-    int cpt = 0;
-    for(int i=sizeof(t) / sizeof(t[0]); i>=0; i--){
+double somme_recursive_inverse(double t[]){
+    double cpt = 0;
+    for(int i=szT-1; i>=0; i--){
         cpt += t[i];     
     }
     return cpt;
 }
+/* Fonction de comparaison de deux 'double's */
+int croissant(const void *x, const void *y)
+{
+  /* Cast en le type effectif */
+  double a = *(double*)(x);
+  double b = *(double*)(y);
 
-/* Somme en valeurs (dé)croissante */
-//On trie le tableau T dans l’ordre (dé)croissant des valeurs, puis l’on applique l’algorithme de somme récursive.
-// Fonction de comparaison pour trier en ordre croissant
-int compareCroissant(const void* a, const void* b) {
-    return (*(int*)a - *(int*)b);
+  if (a < b) {
+    return -1;
+  } else {
+    if (a > b) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
 }
 
-int somme_croissante(int t[]){
+double somme_croissante(double t[]){
     //trier d'abord le tableau dans l'ordre croissant
     //std::sort(t, sizeof(t)/sizeof(t[0]));
-    qsort(t, sizeof(t)/sizeof(t[0]), sizeof(int), compareCroissant);
-    return somme_recursive(t);
+    qsort(t, szT, sizeof(double), croissant);
+    double somme = somme_recursive(t);
+    return somme;
 }
 
-// Fonction de comparaison pour qsort (tri en ordre décroissant)
-int compareDecroissant(const void* a, const void* b) {
-    return (*(int*)b - *(int*)a);
-}
+/* Fonction de comparaison de deux 'double's */
+int decroissant(const void *x, const void *y)
+{
+  /* Cast en le type effectif */
+  double a = *(double*)(x);
+  double b = *(double*)(y);
 
-int somme_decroissante(int T[]){
+  if (b < a) {
+    return -1;
+  } else {
+    if (b > a) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+}
+double somme_decroissante(double T[]){
     // Tri du tableau en ordre décroissant en utilisant la fonction de comparaison
-    qsort(T, sizeof(T)/sizeof(T[0]), sizeof(int),compareDecroissant);
-
+    qsort(T, szT, sizeof(double),decroissant);
     return somme_recursive(T);
 }
 
 /* Somme en valeurs absolues (dé)croissantes */
 //On trie le tableau T dans l’ordre (dé)croissant des valeurs absolues, puis l’on applique l’algorithme de somme récursive.
 int absolutCamparCroissant(const void* a, const void* b){
-    return abs((*(int*)a) - abs(*(int*)b));
+    return fabs((*(double*)a) - fabs(*(double*)b));
 }
-int somme_abs_croisante(int T[]){
-    qsort(T, sizeof(T)/sizeof(T[0]), sizeof(int), absolutCamparCroissant);
-    somme_recursive(T);
+double somme_abs_croisante(double T[]){
+    qsort(T, szT, sizeof(double), absolutCamparCroissant);
+    return somme_recursive(T);
 }
 
 int absolutCamparDecroissant(const void* a, const void* b){
-    return abs((*(int*)b) - abs(*(int*)a));
+    return abs((*(double*)b) - abs(*(double*)a));
 }
-int somme_abs_decroisante(int T[]){
-    qsort(T, sizeof(T)/sizeof(T[0]), sizeof(int), absolutCamparDecroissant);
-    somme_recursive(T);
+double somme_abs_decroisante(double T[]){
+    qsort(T, szT, sizeof(double), absolutCamparDecroissant);
+    return  somme_recursive(T);
+
 }
+
 
 int main(){
-
-const double T[szT] = 
-  { 9007199254740992.0, 999999999999.9, -999999999998.9, 3.56, 12.8766, 
-    0.0123, 999394.4453, 1265356.434536, 23.53, 7889.123, 0.00002145, 0.5, 
-    0.06456, 1254534536.4574, -1254534536.4575, -9007199254740992.0, 
-    -999999999999.9, 999999999998.9, -3.56, -12.8766, -0.0123, 
-    -999394.4453, -1265356.434536, -23.53, -7889.123, -0.00002145, 
-    -0.5, -0.06456, -1254534536.4574, 1254534536.4575, 2.6 };
+    double T[szT] = 
+        { 9007199254740992.0, 999999999999.9, -999999999998.9, 3.56, 12.8766, 
+            0.0123, 999394.4453, 1265356.434536, 23.53, 7889.123, 0.00002145, 0.5, 
+            0.06456, 1254534536.4574, -1254534536.4575, -9007199254740992.0, 
+            -999999999999.9, 999999999998.9, -3.56, -12.8766, -0.0123, 
+            -999394.4453, -1265356.434536, -23.53, -7889.123, -0.00002145, 
+            -0.5, -0.06456, -1254534536.4574, 1254534536.4575, 2.6 };
+   
+    std::cout<< "la somme récursive des valeurs de T est " << somme_recursive(T) << std::endl;
+    std::cout << "la somme récursive inverse des valeurs de T est " << somme_recursive_inverse(T)<< std::endl;
+    std::cout << "somme croissante : " << somme_croissante(T) << std::endl;
+    std::cout << "somme decroissante : " << somme_decroissante(T) << std::endl;
+    std::cout << "somme en valeur absolue croissante : " << somme_abs_croisante(T) << std::endl;
+    std::cout << "somme en valeur absolue décroissante : " << somme_abs_decroisante(T) << std::endl;
 
     return 0;
 }
